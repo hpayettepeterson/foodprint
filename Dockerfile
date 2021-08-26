@@ -1,7 +1,9 @@
 FROM python:3.8.6-buster
 
 COPY api /api
-COPY fooodprint /fooodprint
+COPY foodprint /foodprint
+COPY models /models
+COPY predict_neighbors.py /predict_neighbors.py
 COPY models/nneighbors_model.joblib /models/nneighbors_model.joblib
 COPY requirements.txt /requirements.txt
 

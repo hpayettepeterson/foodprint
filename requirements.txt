@@ -10,6 +10,8 @@ git+git://github.com/chambliss/foodbert.git
 numpy
 pandas
 scikit-learn
+matplotlib
+seaborn
 
 # tests/linter
 black
