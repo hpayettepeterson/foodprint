@@ -5,12 +5,12 @@ import seaborn as sns
 import pickle
 import joblib
 
-def load_vectorized_data(path_to_recipes_data ='./foodprintai/cached_data/cached_vectorized_data.pickle'):
+def load_vectorized_data(path_to_recipes_data ='./foodprint/cached_data/cached_vectorized_data.pickle'):
     # Load dataframe  from pickle file
     df_recipes_vect = pickle.load(open(path_to_recipes_data,"rb"))
     return df_recipes_vect
 
-def load_informational_data(path_to_recipes_data ='./foodprintai/cached_data/cached_informational_data.pickle'):
+def load_informational_data(path_to_recipes_data ='./foodprint/cached_data/cached_informational_data.pickle'):
     # Load dataframe from pickle file
     df_recipes_info = pickle.load(open(path_to_recipes_data,"rb"))
     return df_recipes_info
