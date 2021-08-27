@@ -163,7 +163,7 @@ pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
 
 # ----------------------------------
-#      UPLOAD PACKAGE TO PYPI
+#      API
 # ----------------------------------
 
 
