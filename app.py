@@ -7,8 +7,11 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pickle
 ############## LOADING SESSION #######################################
-complete_df = pd.read_csv("raw_data/temp_dishes_with_co2.csv")
+complete_df = pd.read_csv("data/dishes_with_co2.csv")
 cached_df = pickle.load(open("foodprint/cached_data/cached_im2recipe.pickle", "rb"))
+clustering_df = pd.read_csv('data/3D_recipe_clustering.csv')
+recipes_df = pd.read_csv('data/dishes_with_co2_nutrients_3.csv')
+
 ######################################################################
 
 #plt.plot(cached_df)
@@ -56,32 +59,44 @@ if st.button('PRESS ME - DAMN IT - I CANNOT WAIT!'):
 
     #####  TALK TO THE API #############################
     url=f'https://foodprint-m7tvgzo76q-ew.a.run.app/predict?recipe_id={temp_id}&n_neighbors={dish_number}'
-    response = requests.get(url)
-    j_response = response.json()
-    #st.write(response)
-    #st.write(response.json())
-    api_input_df=pd.DataFrame.from_dict(j_response["prediction"])
-    #api_input_df["distance"] = api_input_df["distance"].apply(lambda x: x)
 
-    #####  PLOT - Standart #############################
-    fig = px.scatter_3d(api_input_df, title="Here you can find better choices", x='distance',y='marker_size',z='co2',
-                     labels={
-                     "distance": " ",
-                     "marker_size": " ",
-                     "co2": "co2 output per 100g"
-                 }, size_max=18,hover_name='name', color='co2')
-    fig.update_layout(showlegend=False)
-    st.plotly_chart(fig)
-    api_input_df
+    response = requests.get(url)
+    if response.status_code == 503:
+        st.write("try again in a few moments!")
+    else:
+        j_response = response.json()
+
+        #st.write(response.json())
+        api_input_df=pd.DataFrame.from_dict(j_response["prediction"])
+        #api_input_df["distance"] = api_input_df["distance"].apply(lambda x: x)
+        api_input_df["marker_size"] = api_input_df["nutritional_value"]*2
+
+        #####  PLOT - Standart #############################
+        fig_api = px.scatter_3d(api_input_df,
+                                title="Here you can find better choices",
+                                x='distance',
+                                y='nutritional_value',
+                                z='co2',
+                                labels={
+                                    "distance": " ",
+                                    "nutritional_value": " nutritional value ",
+                                    "co2": "co2 output per 100g"
+                                },
+                                size="marker_size",
+                                hover_name='name',
+                                color='co2')
+        #fig_api.update_layout(showlegend=True)
+        st.plotly_chart(fig_api)
+
 else:
     st.write('')
 
 
 
+direction = st.radio('Select a diet-type',
+                     ('all', 'vegetarian', 'non-vegetarian'))
 
-st.write("1* Please note that all the values are relativ and you can imagine them between plusminus 30 percent. Homegrown veggies and fruits surely produces less CO2 then imported or transported products. Still, the score can help you to make better decisions! Especially meat is high in CO2 output - choose vegan food more often. Besides: the data stems from healable. This is just a project, not company or something")
-# get data
-clustering_df = pd.read_csv('data/3D_recipe_clustering.csv')
+# add new column to df
 # transform high scores
 mask = clustering_df['co2_score'].str.contains(r'high', na=True)
 clustering_df.loc[mask, 'co2_score_num'] = 3
@@ -91,31 +106,65 @@ clustering_df.loc[mask, 'co2_score_num'] = 2
 # transform low scores
 mask = clustering_df['co2_score'].str.contains(r'low', na=True)
 clustering_df.loc[mask, 'co2_score_num'] = 1
-x, y, z = clustering_df['PCA1'], clustering_df['PCA2'], clustering_df['PCA3']
-recipe = clustering_df['recipeName']
-co2 = clustering_df['co2']
-fig = go.Figure(data=[
-    go.Scatter3d(
+
+# make dfs of veg and nonveg
+clustering_df['dietary_info'] = recipes_df['dietary_info']
+mask = clustering_df['dietary_info'].str.contains(r'non-veg', na=True)
+clustering_df_nonveg = clustering_df.loc[mask]
+mask = clustering_df['dietary_info'].str.contains(r'vegetarian', na=True)
+clustering_df_veg = clustering_df.loc[mask]
+
+if direction == 'all':
+    df = clustering_df
+elif direction == 'non-vegetarian':
+    df = clustering_df_nonveg
+elif direction == 'vegetarian':
+    df = clustering_df_veg
+
+
+if st.button("Load the big cloud of recipes!"):
+
+    # get data
+    #recipe_id = temp_id
+    # recipe_id = "000095fc1d"
+    # row = clustering_df.loc[clustering_df['id'] == recipe_id]
+    # a = float(row['PCA1'])
+    # b = float(row['PCA2'])
+    # c = float(row['PCA3'])
+    # transform high scores
+
+    # replace plot code with this
+    # change this variable based on if you want to show all recipes, just veg, or just non-veg
+    #df = clustering_df
+    x, y, z = df['PCA1'], df['PCA2'], df['PCA3']
+    recipe = df['recipeName']
+    co2 = df['co2']
+    fig = go.Figure(data=[go.Scatter3d(
         x=x,
         y=y,
         z=z,
         mode='markers',
-        hovertext=recipe,
-        hovertemplate=
-        '%{hovertext}<br>CO2: {text}',  # can't get text to properly substitute for
-        text=[clustering_df['co2']],
+        hovertext= recipe,
+        text=co2,
+        hovertemplate = '%{hovertext}<br>CO2: {text}', # can't get text to properly substitute
         marker=dict(
-            size=3,
-            color=clustering_df[
-                'co2_score_num'],  # set color to an array/list of desired values
-            colorscale='RdYlGn',  # choose a colorscale
+            size=4,
+            color=df['co2_score_num'],                # set color to an array/list of desired values
+            colorscale='RdYlGn',   # choose a colorscale
             opacity=0.8,
-            reversescale=True))
-])
-fig.update_layout(width=800,
-                  height=800)
-name = 'the big cloud of recipes'
-camera = dict(eye=dict(
-    x=-0.661828182858935, y=-0.5001780513702737, z=0.030782856945163164))
-fig.update_layout(scene_camera=camera, title=name)
-st.plotly_chart(fig)
+            reversescale= True
+        )
+    )])
+    # camera = dict(
+    #     center=dict(x=a, y=b, z=c),
+    #     eye=dict(x=0.0001, y=0.0001, z=0.0001)
+    # )
+    #fig.update_layout(scene_camera=camera, title="name")
+    fig.update_layout(width=800, height=800, showlegend=False)
+    st.plotly_chart(fig)
+else:
+    st.write("")
+
+st.write(
+    "1* Please note that all the values are relativ and you can imagine them between plusminus 30 percent. Homegrown veggies and fruits surely produces less CO2 then imported or transported products. Still, the score can help you to make better decisions! Especially meat is high in CO2 output - choose vegan food more often. Besides: the data stems from healable. This is just a project, not company or something"
+)
