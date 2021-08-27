@@ -57,13 +57,13 @@ def get_neighbors(recipe_input, df_recipes_info, nneighbors_model, n_neighbors):
 
     # Create the dataframe of the neighbors including their name, distance to inpu, co2 footprint
     # and marker size (power function of co2 fooprint)
-    dict_to_plot = {'name':[],'distance':[], 'co2':[],'marker_size':[]}
+    dict_to_plot = {'name':[],'distance':[], 'co2':[],'nutritional_value':[]}
 
     for rec in zip(neighbors[0][0], neighbors[1][0]):
         dict_to_plot['name'].append(df_recipes_info.iloc[rec[1]]['recipeName'])
         dict_to_plot['distance'].append(rec[0])
         dict_to_plot['co2'].append(df_recipes_info.iloc[rec[1]]['co2'])
-        dict_to_plot['marker_size'].append((df_recipes_info.iloc[rec[1]]['co2']**7)/1000000000000000000)
+        dict_to_plot['nutritional_value'].append(df_recipes_info.iloc[rec[1]]['nutritional_value'])
 
     df_neighbors = pd.DataFrame(dict_to_plot)
 
@@ -74,8 +74,8 @@ def plot_neighbors(df_neighbors):
     # size of the points and colors depend on marker size
     plt.scatter(df_neighbors['distance'], # this is X
             df_neighbors['co2'], # this is Y
-            s=df_neighbors['marker_size'], # this is the size of points
-            c=df_neighbors['marker_size'], #this is the color
+            s=df_neighbors['nutritional_value'], # this is the size of points
+            c=df_neighbors['co2'], #this is the color
             cmap="Blues",
             alpha=0.6,
             edgecolors="grey",
