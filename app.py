@@ -4,22 +4,24 @@ import datetime
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+
 ############## LOADING SESSION #######################################
 complete_df = pd.read_csv("raw_data/temp_dishes_with_co2.csv")
 
 ######################################################################
 
 st.markdown("""
-    # Welcome to **Foodprint.ai**! (Project with **<3** with **LE WAGON**)
-    ## If you want to know the CO2 foodprint of your dish, upload a foto of your dish. Just get started!**or** just type in the recipe below.
+    # Welcome to **Foodprint.ai**! (Project@  **LE WAGON**)
+    ## Check the CO2 ouput* of your favorite dish:
 """)
-#s
 dish_selection = ["nothing"]
-dish_selection = st.multiselect( 'Type in a recipe (select only one dish for now): ',  complete_df["dish_name"])
+dish_selection = st.multiselect( ' ',  complete_df["dish_name"])
 dish_number = st.slider('How many dish recommendations do you want to see?', 1, 10, 5)
 
-if st.button('PRESS ME DAMN IT I CANNOT WAIT!'):
-    ##### variables###############################################################
+
+############starts the magic! ####################################################
+if st.button('PRESS ME - DAMN IT - I CANNOT WAIT!'):
+    ##### variables #############################
     temp_df = complete_df.loc[complete_df['dish_name'].isin(dish_selection)]
     temp_id = temp_df["id"].values[0]
     temp_ingredients = temp_df["ingredients"].values[0]
@@ -31,32 +33,33 @@ if st.button('PRESS ME DAMN IT I CANNOT WAIT!'):
     temp_dish_footprint_per_kilo = temp_df["dish_footprint_per_kilo"].values[0]
     temp_co2_score = temp_df["co2_score"].values[0]
     temp_km_driven_per_100gr = temp_df["km_driven_per_100gr"].values[0]
-    ##### text#################################################################
+
+    ##### text ##################################
     #st.write("You have select: "+ dish_selection[0]+ "(ID: "+ temp_id+")")
     #st.write(" Total dish weight is " + str(temp_total_dish_weight.round(2)) + "g")
     #st.write(" total CO2 footprint is: " + str(temp_total_footprint.round(2)))
     #st.write("We calculated that the  CO2 footprint per 100g is:  " + str(temp_dish_footprint_per_100gr.round(2)) + "g or per 1kg: " + str(temp_dish_footprint_per_kilo.round(2))+"kg")
     if temp_co2_score == "low":
-        st.success(dish_selection[0]+ ' has a CO2 output per Kg of: '+str(temp_dish_footprint_per_kilo.round(2))+  'kg and therefore a low  CO2-Score (below 2kg of CO2 output per 1kg)')
+        st.success(dish_selection[0]+ ' has a CO2 output per Kg of '+str(temp_dish_footprint_per_kilo.round(2))+  ' and therefore a low  CO2-Score (below 2kg of CO2 output per 1kg)')
     if temp_co2_score == "moderate":
-        st.warning(dish_selection[0]+ ' has a CO2 output per Kg of: '+str(temp_dish_footprint_per_kilo.round(2))+  'kg and therefore a moderate CO2-Score (between 2kg and 3kg per 1kg)')
+        st.warning(dish_selection[0]+ ' has a CO2 output per Kg of '+str(temp_dish_footprint_per_kilo.round(2))+  ' and therefore a moderate CO2-Score (between 2kg and 3kg per 1kg)')
     if temp_co2_score == "high":
-        st.error(dish_selection[0]+ ' has a CO2 output per Kg of: '+str(temp_dish_footprint_per_kilo.round(2))+  'kg and therefore a high CO2-Score (higher than 3kg per 1kg)')
-    st.write("We are " + str(temp_confidence_score*100)+"%"  + " sure that this score is accurate!")
+        st.error(dish_selection[0]+ ' has a CO2 output per Kg of '+str(temp_dish_footprint_per_kilo.round(2))+  ' and therefore a high CO2-Score (higher than 3kg per 1kg)')
+    st.write("We are " + str((temp_confidence_score*100).round(2))+"%"  + " sure that this score is accurate!")
+    #st.write("The ingredients are: " + str(temp_ingredients)[1:-1])
+    st.write("Eating 100g of this dish equals "+ str(temp_km_driven_per_100gr.round(2))  + "km driving a car.")
 
-    st.write("The ingredients are: " + str(temp_ingredients)[1:-1])
-    st.write("Per 100g this dish outputs "+str(temp_dish_footprint_per_100gr.round(2))+"g of CO2, which equals  " + str(temp_km_driven_per_100gr.round(2))  + "km driving a car.")
-    #st.table(temp_df[["ingredients", "weight_per_ingr"]])
-    #### TALK TO THE API
+    #####  TALK TO THE API #############################
     url=f'https://foodprint-m7tvgzo76q-ew.a.run.app/predict?recipe_id={temp_id}&n_neighbors={dish_number}'
     response = requests.get(url)
-    st.write(response)
-    #st.write(response.json())
     j_response = response.json()
+    #st.write(response)
+    #st.write(response.json())
     api_input_df=pd.DataFrame.from_dict(j_response["prediction"])
     #api_input_df["distance"] = api_input_df["distance"].apply(lambda x: x)
-    #### Plotting the result
-    fig = px.scatter_3d(api_input_df, title="better choices", x='distance',y='marker_size',z='co2',
+
+    #####  PLOT - Standart #############################
+    fig = px.scatter_3d(api_input_df, title="Here you can find better choices", x='distance',y='marker_size',z='co2',
                      labels={
                      "distance": " ",
                      "marker_size": " ",
@@ -64,7 +67,9 @@ if st.button('PRESS ME DAMN IT I CANNOT WAIT!'):
                  }, size_max=18,hover_name='name', color='co2')
     fig.update_layout(showlegend=False)
     st.plotly_chart(fig)
-    ##### SECOND PLOT
+
+
+    #####  PLOT - ZOOM #############################
     #fig2 = go.Figure(data=api_input_df (x='distance', y='marker_size', z='co2'))
     #fig2.update_layout(
     #    titel="hi",
@@ -93,4 +98,4 @@ else:
     st.write('')
 
 
-st.write("Sources and explainations here!")
+st.write("* Please note that all the values are relativ and you can imagine them between plusminus 30 percent. Homegrown veggies and fruits surely produces less CO2 then imported or transported product. Still, the score can help you to make better decisions! Especially meat is high in CO2 output - choose vegan food more often")
