@@ -63,7 +63,7 @@ def get_neighbors(recipe_input, df_recipes_info, nneighbors_model, n_neighbors):
         dict_to_plot['name'].append(df_recipes_info.iloc[rec[1]]['recipeName'])
         dict_to_plot['distance'].append(rec[0])
         dict_to_plot['co2'].append(df_recipes_info.iloc[rec[1]]['co2'])
-        dict_to_plot['nutritional_value'].append(df_recipes_info.iloc[rec[1]]['nutritional_value'])
+        dict_to_plot['nutritional_value'].append(float(df_recipes_info.iloc[rec[1]]['nutritional_value']))
 
     df_neighbors = pd.DataFrame(dict_to_plot)
 
@@ -116,4 +116,4 @@ if __name__ == '__main__':
     print(df_neighbors)
     print('\n')
 
-    plot_neighbors(df_neighbors)
+    #plot_neighbors(df_neighbors)

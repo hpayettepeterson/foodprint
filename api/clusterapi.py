@@ -25,5 +25,6 @@ def predict(recipe_id='006ab0aafd', n_neighbors='5'):
     recipe_input = get_recipe_input(recipe_id, df_recipes_vect)
     nneighbors_model = load_model()
     df_neighbors = get_neighbors(recipe_input, df_recipes_info, nneighbors_model, n_neighbors=int(n_neighbors))
+    print(df_neighbors)
     return dict(prediction=df_neighbors)
     
