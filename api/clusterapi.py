@@ -19,7 +19,7 @@ def index():
     return dict(greeting='hello')
 
 @app.get('/predict')
-def predict(recipe_id='Pork-ramen-soup-310007', n_neighbors='5'):
+def predict(recipe_id='006ab0aafd', n_neighbors='5'):
     df_recipes_vect = load_vectorized_data()
     df_recipes_info = load_informational_data()
     recipe_input = get_recipe_input(recipe_id, df_recipes_vect)

@@ -68,7 +68,7 @@ def plot_neighbors(df_neighbors):
     plt.show()
 
 if __name__ == '__main__':
-    recipe_id = 'Pork-ramen-soup-310007'
+    recipe_id = '006ab0aafd'
 
     df_recipes_vect = load_vectorized_data()
     print('df_recipes_vect : ')
