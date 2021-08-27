@@ -90,3 +90,5 @@ run_api:
 
 run_locally:
 	@python -m ${PACKAGE_NAME}.${FILE_NAME}
+
+#run
