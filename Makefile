@@ -116,3 +116,4 @@ run_api:
 	uvicorn api.clusterapi:app --reload
 run_locally:
 	@python -m ${PACKAGE_NAME}.${FILE_NAME}
+
