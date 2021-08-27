@@ -16,11 +16,12 @@ BUCKET_FOLDER=data
 BUCKET_FILE_NAME=$(shell basename ${LOCAL_PATH})
 REGION=europe-west1
 set_project:
-    @gcloud config set project ${PROJECT_ID}
+	@gcloud config set project ${PROJECT_ID}
+	
 create_bucket:
-    @gsutil mb -l ${REGION} -p ${PROJECT_ID} gs://${BUCKET_NAME}
+	@gsutil mb -l ${REGION} -p ${PROJECT_ID} gs://${BUCKET_NAME}
 upload_data:
-    @gsutil cp ${LOCAL_PATH} gs://${BUCKET_NAME}/${BUCKET_FOLDER}/${BUCKET_FILE_NAME}
+	@gsutil cp ${LOCAL_PATH} gs://${BUCKET_NAME}/${BUCKET_FOLDER}/${BUCKET_FILE_NAME}
 
 
 
@@ -106,12 +107,12 @@ PYPI_USERNAME=<AUTHOR>
 PACKAGE_NAME=foodprint.ai
 FILE_NAME=trainer
 build:
-    @python setup.py sdist bdist_wheel
+	@python setup.py sdist bdist_wheel
 pypi_test:
-    @twine upload -r testpypi dist/* -u $(PYPI_USERNAME)
+	@twine upload -r testpypi dist/* -u $(PYPI_USERNAME)
 pypi:
-    @twine upload dist/* -u $(PYPI_USERNAME)
+	@twine upload dist/* -u $(PYPI_USERNAME)
 run_api:
-    uvicorn api.clusterapi:app --reload
+	uvicorn api.clusterapi:app --reload
 run_locally:
-    @python -m ${PACKAGE_NAME}.${FILE_NAME}
+	@python -m ${PACKAGE_NAME}.${FILE_NAME}
