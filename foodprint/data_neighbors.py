@@ -3,15 +3,23 @@ import json
 import pandas as pd
 import numpy as np
 from google.cloud import storage
-from foodprint.params import BUCKET_NAME, BUCKET_TRAIN_DATA_PATH
+from foodprint.params import BUCKET_NAME, BUCKET_TRAIN_DATA_PATH, BUCKET_FILE_NAME
+import pickle
+
 
 
 def get_data_from_gcp(nrows=10000, optimize=False, **kwargs):
     """method to get the training data (or a portion of it) from google cloud bucket"""
     # Add Client() here
+    ## TO DO - Finish get get data from GCP function
     client = storage.Client()
+    bucket = client.bucket(BUCKET_NAME)
+    blob = bucket.blob(BUCKET_FILE_NAME)
+    pickle_in = blob.download_as_string()
+    gcp_model = pickle.loads(pickle_in)
     path = f"gs://{BUCKET_NAME}/{BUCKET_TRAIN_DATA_PATH}"
     df = pd.read_csv(path, nrows=nrows)
+    model = pickle.load(path)
     return df
 
 

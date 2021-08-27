@@ -26,12 +26,18 @@ PROJECT_ID = 'le-wagon-chris'
 
 BUCKET_NAME = 'foodprint-672'
 
+BUCKET_FOLDER = 'data'
+
+BUCKET_FILE_NAME = 'cached_vectorized_data.pickle'
+
 ##### Data  - - - - - - - - - - - - - - - - - - - - - - - -
 
 # train data file location
 # /!\ here you need to decide if you are going to train using the provided and uploaded data/train_1k.csv sample file
 # or if you want to use the full dataset (you need need to upload it first of course)
-BUCKET_TRAIN_DATA_PATH = ''
+
+BUCKET_TRAIN_DATA_PATH = f"{BUCKET_FOLDER}/{BUCKET_FILE_NAME}"
+
 
 ##### Training  - - - - - - - - - - - - - - - - - - - - - -
 
