@@ -56,9 +56,9 @@ def app():
             st.warning(dish_selection[0]+ ' has a CO2 output per Kg of '+str(temp_dish_footprint_per_kilo.round(2))+  ' and therefore a moderate CO2-Score (between 2kg and 3kg per 1kg)')
         if temp_co2_score == "high":
             st.error(dish_selection[0]+ ' has a CO2 output per Kg of '+str(temp_dish_footprint_per_kilo.round(2))+  ' and therefore a high CO2-Score (higher than 3kg per 1kg)')
-        st.write("We are " + str((temp_confidence_score*100).round(2))+"%"  + " sure that this score is accurate!")
+        st.write("We have CO2 data for " + str((temp_confidence_score*100).round(2))+"%"  + " of the ingredients in this dish.")
         #st.write("The ingredients are: " + str(temp_ingredients)[1:-1])
-        st.write("Eating 100g of this dish equals "+ str(temp_km_driven_per_100gr.round(2))  + "km driving a car.")
+        st.write("Eating 100g of this dish outputs the same CO2 as driving "+ str(temp_km_driven_per_100gr.round(2))  + " km in a car.")
 
         ## Nutritional info
         st.markdown('## Nutritional Info:')
@@ -66,11 +66,13 @@ def app():
         # get calorie info
         mask3 = recipes_df['id'].str.contains(f'{id}', na=True)
         #calories = recipes_df[mask3]['calories_per_100gr'].values[0] # NEED HELP TROUBLESHOOTING THIS LINE, how to get calorie info
-        #st.write(f'This dish has about {calories} per 100g serving.')
-        st.write(temp_ingredients) # process these so they appear nicely
+        st.write('This dish has about X calories per 100g serving. (get this working, code keeps breaking')
+
         # show link to recipe?
         if st.button('See ingredients'): # get this working
             st.write(temp_ingredients)
+        st.write("Process the ingredients so they appear nicely. Also, make them show up when button is pressed?", temp_ingredients) # process these so they appear nicely
+        st.write('could also list the ingredients it has which account for the greatest percentage of its carbon footprint?')
 
         #####  TALK TO THE API #############################
         url=f'https://foodprint-m7tvgzo76q-ew.a.run.app/predict?recipe_id={temp_id}&n_neighbors={dish_number}'

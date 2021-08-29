@@ -34,7 +34,7 @@ def app():
     st.write('-------------')
     st.markdown('## Dish Clustering')
     st.markdown('### Below is a clustering of different dishes, each represented by a point in the embedding space.')
-    st.write('Similar dishes are nearby each other. Each dish is colored according to its carbon footprint (green: low, yellow: moderate, red: high). Feel free to explore the clustering and check out the differences between vegetarian and non-vegetarian foods.')
+    st.write('Similar dishes are nearby each other. Each dish is colored according to its carbon footprint (green: low, yellow: moderate, red: high). Explore the clustering and check out the differences between vegetarian and non-vegetarian foods.')
 
     direction = st.radio('Select a dish type:',
                         ('all', 'vegetarian', 'non-vegetarian'))
