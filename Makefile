@@ -17,7 +17,7 @@ BUCKET_FILE_NAME=$(shell basename ${LOCAL_PATH})
 REGION=europe-west1
 set_project:
 	@gcloud config set project ${PROJECT_ID}
-	
+
 create_bucket:
 	@gsutil mb -l ${REGION} -p ${PROJECT_ID} gs://${BUCKET_NAME}
 upload_data:
@@ -116,4 +116,3 @@ run_api:
 	uvicorn api.clusterapi:app --reload
 run_locally:
 	@python -m ${PACKAGE_NAME}.${FILE_NAME}
-
