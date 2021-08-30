@@ -121,6 +121,15 @@ elif direction == 'non-vegetarian':
 elif direction == 'vegetarian':
     df = clustering_df_veg
 
+fig = px.scatter(df,
+                 x=df['PCA1'],
+                 y=df['PCA2'],
+                 size=['co2'],
+                 color=['co2'],
+                 hover_name=df['recipeName'],
+                 log_x=True,
+                 size_max=60)
+st.plotly_chart(fig)
 
 if st.button("Load the big cloud of recipes!"):
 
@@ -162,6 +171,7 @@ if st.button("Load the big cloud of recipes!"):
     #fig.update_layout(scene_camera=camera, title="name")
     fig.update_layout(width=800, height=800, showlegend=False)
     st.plotly_chart(fig)
+
 else:
     st.write("")
 
