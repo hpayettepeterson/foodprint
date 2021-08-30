@@ -11,7 +11,7 @@ import numpy as np
 def app():
     st.markdown('## Food Statistics')
 
-    st.write('Average carbon footprint (in kilos of CO2) per kilo of food:')
+    st.markdown('### Average carbon footprint (in kilos of CO2) per kilo of food:')
 
     # get data
     clustering_df = pd.read_csv('data/3D_recipe_clustering.csv')
@@ -30,6 +30,55 @@ def app():
     col1.metric("All dishes", mean_co2_100gr_all)
     col2.metric("Vegetarian dishes", mean_co2_100gr_veg)
     col3.metric("Non-vegetarian dishes", mean_co2_100gr_nonveg)
+
+    # show co2 data of meats
+    st.markdown('### The average carbon footprint per kilo of some common ingredients:')
+    co2_df = pd.read_csv('data/co2.csv')
+
+    st.markdown('#### Meats')
+    meats_lst = ['beef', 'pork', 'lamb', 'duck', 'chicken', 'salmon']
+
+    carbon_output_meats = []
+    scores_lst = []
+    for meat in meats_lst:
+        carbon_output = co2_df.loc[co2_df['ingredients'] == meat]['CO2_per_kilo'].values[0]
+        carbon_output_meats.append(carbon_output)
+        scores_lst.append('high')
+
+
+    meats_df = pd.DataFrame(
+        {'Food': meats_lst,
+        'CO2 Output (kg per kg)': carbon_output_meats,
+        'Carbon Footprint': scores_lst
+        })
+    meats_df.sort_values('CO2 Output (kg per kg)', ascending=False, inplace=True)
+    st.write(meats_df)
+
+    st.markdown('#### Non-meats')
+    st.write('TROUBLESHOOT THIS')
+    nonmeats_lst = ['tofu', 'eggs', 'cheese', 'yogurt', 'tomatoes', 'lettuce', 'bananas']
+
+    carbon_output_foods = []
+    scores_lst = []
+    for food in nonmeats_lst:
+        carbon_output = co2_df.loc[co2_df['ingredients'] == food]['CO2_per_kilo'].values[0]
+        carbon_output_foods.append(carbon_output)
+    #scores_lst.append('High')
+    if carbon_output <= 2:
+        scores_lst.append('low')
+    elif carbon_output <= 3:
+        scores_lst.append('moderate')
+    else:
+        scores_lst.append('high')
+
+    nonmeats_df = pd.DataFrame(
+        {'Food': nonmeats_lst,
+        'CO2 Output (kg per kg)': carbon_output_foods,
+        'Carbon Footprint': scores_lst
+        })
+    nonmeats_df.sort_values('CO2 Output (kg per kg)', ascending=False, inplace=True)
+    st.write(nonmeats_df)
+
 
     st.write('-------------')
     st.markdown('## Dish Clustering')
