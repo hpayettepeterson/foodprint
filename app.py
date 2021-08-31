@@ -28,7 +28,7 @@ st.write('How can you make more informed choices about your food? Foodprint.ai p
 st.write('-----------------------------')
 # Add all your applications (pages) here
 app.add_page("Food Statistics", food_stats.app)
-app.add_page("Dish Info", dish_info.app)
+app.add_page("Dish Search", dish_info.app)
 
 # The main app
 app.run()

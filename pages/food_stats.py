@@ -18,13 +18,13 @@ def app():
     recipes_df = pd.read_csv('data/dishes_with_co2_nutrients_3.csv')
 
     # average footprints
-    mean_co2_100gr_all = round((10 * np.mean(recipes_df['dish_footprint_per_100gr'])), 3)
+    mean_co2_100gr_all = round((10 * np.mean(recipes_df['dish_footprint_per_100gr'])), 2)
 
     mask1 = recipes_df['dietary_info'].str.contains(r'vegetarian', na=True)
-    mean_co2_100gr_veg = round((10 * np.mean(recipes_df[mask1]['dish_footprint_per_100gr'])), 3)
+    mean_co2_100gr_veg = round((10 * np.mean(recipes_df[mask1]['dish_footprint_per_100gr'])), 2)
 
     mask2 = recipes_df['dietary_info'].str.contains(r'non-veg', na=True)
-    mean_co2_100gr_nonveg = round((10 * np.mean(recipes_df[mask2]['dish_footprint_per_100gr'])), 3)
+    mean_co2_100gr_nonveg = round((10 * np.mean(recipes_df[mask2]['dish_footprint_per_100gr'])), 2)
 
     col1, col2, col3 = st.columns(3)
     col1.metric("All dishes", mean_co2_100gr_all)
@@ -52,33 +52,13 @@ def app():
         'Carbon Footprint': scores_lst
         })
     meats_df.sort_values('CO2 Output (kg per kg)', ascending=False, inplace=True)
-    st.write(meats_df)
+    st.table(meats_df)
 
     st.markdown('#### Non-meats')
-    st.write('TROUBLESHOOT THIS')
-    nonmeats_lst = ['tofu', 'eggs', 'cheese', 'yogurt', 'tomatoes', 'lettuce', 'bananas']
+    nonmeats_df = pd.read_csv("data/nonmeats.csv")
+    st.table(nonmeats_df)
 
-    carbon_output_foods = []
-    scores_lst = []
-    for food in nonmeats_lst:
-        carbon_output = co2_df.loc[co2_df['ingredients'] == food]['CO2_per_kilo'].values[0]
-        carbon_output_foods.append(carbon_output)
-    #scores_lst.append('High')
-    if carbon_output <= 2:
-        scores_lst.append('low')
-    elif carbon_output <= 3:
-        scores_lst.append('moderate')
-    else:
-        scores_lst.append('high')
-
-    nonmeats_df = pd.DataFrame(
-        {'Food': nonmeats_lst,
-        'CO2 Output (kg per kg)': carbon_output_foods,
-        'Carbon Footprint': scores_lst
-        })
-    nonmeats_df.sort_values('CO2 Output (kg per kg)', ascending=False, inplace=True)
-    st.write(nonmeats_df)
-
+    st.write('A carbon footprint is considered low if it is below 2 kg of CO2 output per 1 kg of food, moderate if it is between 2 and 3 kg of CO2 per kg, and high if it is greater than 3 kg of CO2 per kg.')
 
     st.write('-------------')
     st.markdown('## Dish Clustering')
@@ -137,7 +117,7 @@ def app():
         mode='markers',
         hovertext= recipe,
         text=co2,
-        hovertemplate = '%{hovertext}<br>CO2/Kilo:%{text}', # can't get text to properly substitute
+        hovertemplate = '%{hovertext}<br>CO2/kg:%{text}',
         marker=dict(
             size=4,
             color=df['co2_score_num'],                # set color to an array/list of desired values
@@ -154,8 +134,43 @@ def app():
     fig.update_layout(width=800, height=800, showlegend=False)
     st.plotly_chart(fig)
 
+    st.write('--------------')
+    st.markdown('## More facts about our data')
+    st.markdown('''The total number of recipes in our dataset is **51235**.
+            Among them **44820** are vegetarian and **6415** are meat-based.''')
+
+    st.markdown('''**32054** of the vegetarian recipes have a low carbon footprint, **9169** have a moderate one and **3597** have a high one.''')
+
+    st.markdown('''**1614** of the non-vegetarian recipes have a low carbon footprint, **1074** have a moderate one and **3727** have a high one.''')
+
+    st.markdown('''Per 100 g serving, **508** out of **6415** total non-vegetarian recipes exceed **2 kg** of CO2 output.''')
+
+    st.markdown('''In contrast, the vegetarian recipe with the highest carbon footprint outputs **1.1 kg** of CO2 per 100 g serving.
+                ''')
+
+    # expander = st.expander("More information about our data")
+
+    # expander.markdown('''We collected carbon footprint data from [Reducing food’s environmental impacts through producers and consumers](https://science.sciencemag.org/content/360/6392/987) and [Healabel](https://healabel.com/carbon-footprint-of-foods). The CO2 emissions per ingredient are only estimates of average values and may not always be accurate.
+    #             We used food and recipe data from [pic2recipe](http://pic2recipe.csail.mit.edu/) and [Yummly](https://alioben.github.io/yummly/).
+
+    #             Total amount of recipes: 51235
+    #             Among them 44820 are vegetarian and 6415 are meat-based.
+    #             Vegis score:
+    #             low        32054
+    #             moderate    9169
+    #             high        3597
+    #             Meat score:
+    #             low        1614
+    #             moderate   1074
+    #             high       3727
+    #             Even on 100g basis, 508 out of 6415 total meat-based recipes exceed the 2kg CO2 output. Among those 357 recipes even count as “high” on a 100g basis! On 1kg base, this even increases to 3717, making almost half of the recipes.
+    #             The highest CO2 recipe found in vegetarian recipes per 100g is 1.1kg that still count as “low”. On 1kg level, 3524 out 44820 would be rated as “high”.
+    #             ''')
+    st.write('---------')
     st.write(
             "\* Please note that the calculated carbon footprints are only estimates, to be used for educational purposes."
         )
     if st.button("Find out more"):
-        st.write('Write about how we got the data, from which sources etc (healabel, scientific paper etc')
+        st.markdown('''We collected carbon footprint data from [Reducing food’s environmental impacts through producers and consumers](https://science.sciencemag.org/content/360/6392/987) and [Healabel](https://healabel.com/carbon-footprint-of-foods). The CO2 emissions per ingredient are only estimates of average values and may not always be accurate.
+                We used food and recipe data from [pic2recipe](http://pic2recipe.csail.mit.edu/) and [Yummly](https://alioben.github.io/yummly/).
+                \nThis project was completed by Hannah Payette Peterson, Jean-Arnaud Ritouret, Martin Lechner, and Christopher Scott.''')

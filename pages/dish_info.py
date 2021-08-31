@@ -21,7 +21,7 @@ def app():
     ######################################################################
 
     st.markdown("""
-        ## Check the estimated CO2 ouput* of your favorite dish
+        ## Check the estimated CO2 output* of your favorite dish
     """)
     st.write('Select a dish to see its estimated carbon footprint, nutritional info, suggestions of similar dishes, and more')
     dish_selection = ["nothing"]
@@ -92,7 +92,7 @@ def app():
                 recipe_temp_df.sort_values('Carbon Footprint', ascending=False, inplace=True)
                 recipe_temp_df.reset_index(inplace=True)
                 recipe_temp_df.drop(columns=['Carbon Footprint', 'index'], inplace=True)
-                st.write(recipe_temp_df.head(3))
+                st.table(recipe_temp_df.head(3))
                 st.write('You can use this information to make informed choices about which ingredients you could substitute to reduce your carbon footprint.')
             else:
                 message = 'Sorry, we don\'t have ingredient information available for this dish'
@@ -107,19 +107,32 @@ def app():
             calories = int(round(recipes_df.loc[recipes_df['id'] == temp_id]['calories_per_100gr'].values[0], 0))
             #mask3 = recipes_df['id'].str.contains(f'{id}', na=True)
             #calories = recipes_df[mask3]['calories_per_100gr'].values[0] # NEED HELP TROUBLESHOOTING THIS LINE, how to get calorie info
-            st.markdown(f'This dish has about **{calories} calories** per 100g serving.')
+            #st.markdown(f'This dish has about **{calories} calories** per 100 g serving.')
                   # show link to recipe?
 
-            st.write('ADD MORE NUTRITIONAL INFO')
+            # get other nutritional info per 100gr for dish with particular ID
+            # fat
+            fat = round(recipes_df.loc[recipes_df['id'] == temp_id]['fat_per_100gr'].values[0], 2)
+            # protein
+            protein = round(recipes_df.loc[recipes_df['id'] == temp_id]['protein_per_100gr'].values[0], 2)
+            # salt
+            salt = round(recipes_df.loc[recipes_df['id'] == temp_id]['salt_per_100gr'].values[0], 2)
+            # sugar
+            sugar = round(recipes_df.loc[recipes_df['id'] == temp_id]['sugar_per_100gr'].values[0], 2)
+            st.write('Here is some nutritional info for a 100 g serving of this dish.')
 
-
-            st.write('GET BUTTON WORKING FOR INGREDIENTS')
+            col1, col2, col3, col4, col5 = st.columns(5)
+            col1.metric("calories", calories)
+            col2.metric("fat (g)", fat)
+            col3.metric("protein (g)", protein)
+            col4.metric('salt (g)', salt)
+            col5.metric('sugar (g)', sugar)
 
 
             #####  TALK TO THE API #############################
             st.markdown('## Similar Dishes:')
-            st.write('HERE ADD A LIST OF MOST SIMILAR DISHES')
-            url=f'https://foodprint-m7tvgzo76q-ew.a.run.app/predict?recipe_id={temp_id}&n_neighbors={dish_number}'
+
+            url=f'https://foodprint-m7tvgzo76q-ew.a.run.app/predict_similarities?recipe_id={temp_id}&n_neighbors={dish_number}'
 
             response = requests.get(url)
             if response.status_code == 503:
@@ -128,27 +141,62 @@ def app():
                 j_response = response.json()
 
                 #st.write(response.json())
-                api_input_df=pd.DataFrame.from_dict(j_response["prediction"])
+                api_input_df=pd.DataFrame.from_dict(j_response["prediction"]).head()
                 #api_input_df["distance"] = api_input_df["distance"].apply(lambda x: x)
-                api_input_df["marker_size"] = api_input_df["nutritional_value"]*2
 
-                #####  PLOT - Standart #############################
-                st.write('Here are some similar dishes and their carbon footprints. Here you can find greener options. (Output list of similar dishes and their footprints or calories)')
+                # add co2 scoring
+                api_input_df['Dish'] = api_input_df['name']
+                api_input_df['Calories (per 100 g)'] = np.round(api_input_df['calories_per_100g'], 2)
+                api_input_df['Carbon Footprint'] = api_input_df['co2']
+
+                api_input_df['CO2 Output (kg per kg)'] = np.round(api_input_df['co2'].apply(lambda x: x * 10), 2)
+                api_input_df.loc[api_input_df['CO2 Output (kg per kg)'] <= (3), 'Carbon Footprint'] = 'moderate'
+                api_input_df.loc[api_input_df['CO2 Output (kg per kg)'] <= (2), 'Carbon Footprint'] = 'low'
+                api_input_df.loc[api_input_df['CO2 Output (kg per kg)'] > (3), 'Carbon Footprint'] = 'high'
+
+                df_show = api_input_df.copy(deep=True)
+                df_show.drop(columns=['name', 'percentage_of_similarity', 'co2', 'calories_per_100g'], inplace=True)
+                st.write('Here is the searched dish and the top four most similar dishes, along with carbon footprint and calorie information. This information can help you find greener options.')
+                st.table(df_show)
+
+                st.write('Here is a plot of the searched dish along with the four most similar dishes. The dishes are shown along three axes: CO2 output, calories per 100gr serving, and similarity (lower = more similar to input dish).')
                 fig_api = px.scatter_3d(api_input_df,
-                                        title="",
-                                        x='distance',
-                                        y='nutritional_value',
-                                        z='co2',
-                                        labels={
-                                            "distance": " ",
-                                            "nutritional_value": " nutritional value ",
-                                            "co2": "co2 output per 100g"
-                                        },
-                                        size="marker_size",
-                                        hover_name='name',
-                                        color='co2')
-                #fig_api.update_layout(showlegend=True)
+                    title="",
+                    x='percentage_of_similarity',
+                    y='calories_per_100g',
+                    z='CO2 Output (kg per kg)',
+                    labels={
+                        "percentage_of_similarity": "Similarity",
+                        "calories_per_100g": "Calories (per 100 g)",
+                        "CO2 Output (kg per kg)": "CO2 Output (kg per kg)"
+                    },
+                    color_discrete_map={
+                                "low": "green",
+                                "moderate": "yellow",
+                                "high": "red"},
+                    template="plotly",
+                    hover_name='name',
+                    hover_data=["CO2 Output (kg per kg)", "Carbon Footprint"],
+                    color='Carbon Footprint')
+                fig_api.update(layout_coloraxis_showscale=False)
                 st.plotly_chart(fig_api)
+                #####  PLOT - Standart #############################
+                # fig_api = px.scatter_3d(api_input_df,
+                #                         title="",
+                #                         x='distance',
+                #                         y='nutritional_value',
+                #                         z='co2',
+                #                         labels={
+                #                             "distance": " ",
+                #                             "nutritional_value": " nutritional value ",
+                #                             "co2": "co2 output per 100g"
+                #                         },
+                #                         size="marker_size",
+                #                         hover_name='name',
+                #                         color='co2',
+                #                         color_continuous_scale=px.colors.diverging.RdYlGn[::-1])
+                # #fig_api.update_layout(showlegend=True)
+                # st.plotly_chart(fig_api)
 
             ### Other dish info
             st.markdown("## Other info about this dish:")
@@ -163,7 +211,7 @@ def app():
             recipe_url = recipes_df.loc[recipes_df['id'] == temp_id]['url'].values[0]
             st.markdown(f'''
 
-                        ### See the recipe for this dish [here]({recipe_url})
+                        ### See the recipe for this dish [here]({recipe_url}) (note that some links may no longer work)
                         ''')
 
             st.write('')
@@ -173,4 +221,6 @@ def app():
         "\* Please note that the calculated carbon footprints are only estimates, to be used for educational purposes."
     )
     if st.button("Find out more"):
-        st.write('Write about how we got the data, from which sources etc (healabel, scientific paper etc')
+        st.markdown('''We collected carbon footprint data from [Reducing food’s environmental impacts through producers and consumers](https://science.sciencemag.org/content/360/6392/987) and [Healabel](https://healabel.com/carbon-footprint-of-foods). The CO2 emissions per ingredient are only estimates of average values and may not always be accurate.
+                    We used food and recipe data from [pic2recipe](http://pic2recipe.csail.mit.edu/) and [Yummly](https://alioben.github.io/yummly/).
+                    \nThis project was completed by Hannah Payette Peterson, Jean-Arnaud Ritouret, Martin Lechner, and Christopher Scott.''')
