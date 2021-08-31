@@ -2,6 +2,7 @@ import pytz
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from predict_neighbors import load_vectorized_data, load_informational_data, get_recipe_input, load_model, get_neighbors
+from predict_similarities import load_recipe_similarities, load_similar_recipes, load_informational_data, get_similar_recipes
 
 app = FastAPI()
 
@@ -30,7 +31,7 @@ def predict(recipe_id='006ab0aafd', n_neighbors='5'):
     
 
 @app.get('/predict_similarities')
-def predict(recipe_id='006ab0aafd', n_similar='10'):
+def predict_similarities(recipe_id='006ab0aafd', n_similar='10'):
     X_recipe_similarities = load_recipe_similarities()
     X_similar_recipes = load_similar_recipes()
     df_recipes_info = load_informational_data()
