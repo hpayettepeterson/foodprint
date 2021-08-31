@@ -24,11 +24,11 @@ app = MultiPage()
 # Title of the main page
 st.title("foodprint.ai")
 st.write('A project at Le Wagon Data Science Bootcamp')
-st.write('How can you make more informed choices about your food? Foodprint.ai provides you with carbon-footprint and nutritional information about your favorite dishes, and can help you find greener alternatives.')
+st.write('How can you make more informed choices about your food? Foodprint.ai provides you with carbon footprint and nutritional information about your favorite dishes, and can help you find greener alternatives.')
 st.write('-----------------------------')
 # Add all your applications (pages) here
 app.add_page("Food Statistics", food_stats.app)
-app.add_page("Dish Info", dish_info.app)
+app.add_page("Dish Search", dish_info.app)
 
 # The main app
 app.run()
@@ -46,7 +46,6 @@ app.run()
 # if st.sidebar.button('Food Statistics'):
 #     # print is visible in the server output, not in the page
 #     print('button clicked!')
-
 
 # if st.sidebar.button('Test a Dish'):
 #     # print is visible in the server output, not in the page

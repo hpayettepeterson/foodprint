@@ -35,3 +35,6 @@ termcolor
 # api
 fastapi
 uvicorn
+
+# frontend
+streamlit
