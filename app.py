@@ -47,7 +47,6 @@ app.run()
 #     # print is visible in the server output, not in the page
 #     print('button clicked!')
 
-
 # if st.sidebar.button('Test a Dish'):
 #     # print is visible in the server output, not in the page
 #     print('button clicked!')

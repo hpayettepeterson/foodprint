@@ -171,6 +171,7 @@ def app():
             "\* Please note that the calculated carbon footprints are only estimates, to be used for educational purposes."
         )
     if st.button("Find out more"):
+
         st.markdown('''We collected carbon footprint data from [Reducing food’s environmental impacts through producers and consumers](https://science.sciencemag.org/content/360/6392/987) and [Healabel](https://healabel.com/carbon-footprint-of-foods). The CO2 emissions per ingredient are only estimates of average values and may not always be accurate.
                 We used food and recipe data from [pic2recipe](http://pic2recipe.csail.mit.edu/) and [Yummly](https://alioben.github.io/yummly/).
                 \nThis project was completed by Hannah Payette Peterson, Jean-Arnaud Ritouret, Martin Lechner, and Christopher Scott.''')
