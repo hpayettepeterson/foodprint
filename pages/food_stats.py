@@ -18,6 +18,7 @@ def app():
     recipes_df = pd.read_csv('gs://foodprint-672/data/dishes_with_co2_nutrients_3.csv')
 
     # average footprints
+    # random comment
     mean_co2_100gr_all = round((10 * np.mean(recipes_df['dish_footprint_per_100gr'])), 2)
 
     mask1 = recipes_df['dietary_info'].str.contains(r'vegetarian', na=True)
