@@ -8,3 +8,4 @@ raw_data/
 foodprint/data/
 foodprint/cached_data/
 raw_data
+*.csv
