@@ -9,3 +9,4 @@ foodprint/data/
 foodprint/cached_data/
 raw_data
 *.csv
+*.ipynb
