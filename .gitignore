@@ -3,8 +3,13 @@
 .ipynb_checkpoints
 .DS_Store
 raw_data/
-*.csv
 **/__pycache__/
 .env
-foodprint/data/
+foodprint/cached_data/
 raw_data
+*.csv
+*.ipynb
+credentials.json
+/data
+/models
+/snapshots

@@ -3,35 +3,37 @@ pip>=9
 setuptools>=26
 twine
 wheel>=0.29
-git+git://github.com/chambliss/foodbert.git
+
 
 
 # data science
 numpy
 pandas
-scikit-learn
-matplotlib
-seaborn
+plotly
+#scikit-learn
+#matplotlib
+#seaborn
 
 # tests/linter
-black
-coverage
-flake8
-pytest
-yapf
+# black
+# coverage
+# flake8
+# pytest
+# yapf
 
 # API
 gcsfs
 google-cloud-storage
-mlflow
-s3fs
+#mlflow
+
 
 # utilities
 six>=1.14
-joblib
-memoized-property
-termcolor
+# joblib
+
 
 # api
-fastapi
-uvicorn
+
+
+# frontend
+streamlit
