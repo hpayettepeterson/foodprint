@@ -1,11 +1,12 @@
 import requests
 import streamlit as st
-# import datetime
-# import pandas as pd
-# import plotly as plt
-# import plotly.express as px
-# import plotly.graph_objects as go
-# import pickle
+import datetime
+import pandas as pd
+import plotly as plt
+import plotly.express as px
+import plotly.graph_objects as go
+import pickle
+import os
 # ############## LOADING SESSION #######################################
 # complete_df = pd.read_csv("data/dishes_with_co2_nutrients_3.csv")
 # cached_df = pickle.load(open("foodprint/cached_data/cached_im2recipe.pickle", "rb"))
@@ -13,6 +14,34 @@ import streamlit as st
 # recipes_df = pd.read_csv('data/dishes_with_co2_nutrients_3.csv')
 
 # ######################################################################
+
+
+BUCKET_NAME = "le-wagon-data"
+#storage_filename = "data/"
+#local_filename = "train_1k_downloaded.csv"
+upload_storage_filename = "data/train_1k_uploaded.csv"
+
+# create credentials file
+google_credentials_file = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
+
+if not os.path.isfile(google_credentials_file):
+
+    print("write credentials file 🔥" + f"\n- path: {google_credentials_file}")
+
+    # retrieve credentials
+    json_credentials = os.environ["GOOGLE_CREDS"]
+
+    # write credentials
+    with open(google_credentials_file, "w") as file:
+
+        file.write(json_credentials)
+
+else:
+
+    print("credentials file already exists 🎉")
+
+
+
 
 # Custom imports
 from multipage import MultiPage
