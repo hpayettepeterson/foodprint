@@ -3,7 +3,7 @@ pip>=9
 setuptools>=26
 twine
 wheel>=0.29
-git+git://github.com/chambliss/foodbert.git
+
 
 
 # data science
@@ -25,16 +25,15 @@ plotly
 gcsfs
 google-cloud-storage
 #mlflow
-s3fs
+
 
 # utilities
 six>=1.14
 # joblib
-termcolor
+
 
 # api
-fastapi
-uvicorn
+
 
 # frontend
 streamlit

@@ -1,11 +1,6 @@
-import requests
+
 import streamlit as st
-import datetime
-import pandas as pd
-import plotly as plt
-import plotly.express as px
-import plotly.graph_objects as go
-import pickle
+
 import os
 # ############## LOADING SESSION #######################################
 # complete_df = pd.read_csv("data/dishes_with_co2_nutrients_3.csv")
@@ -16,10 +11,10 @@ import os
 # ######################################################################
 
 
-BUCKET_NAME = "le-wagon-data"
+BUCKET_NAME = "foodprint-672"
 #storage_filename = "data/"
 #local_filename = "train_1k_downloaded.csv"
-upload_storage_filename = "data/train_1k_uploaded.csv"
+#upload_storage_filename = "data/train_1k_uploaded.csv"
 
 # create credentials file
 google_credentials_file = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
