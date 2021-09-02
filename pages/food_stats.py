@@ -14,10 +14,11 @@ def app():
     st.markdown('### Average carbon footprint (in kilos of CO2) per kilo of food:')
 
     # get data
-    clustering_df = pd.read_csv('data/3D_recipe_clustering.csv')
-    recipes_df = pd.read_csv('data/dishes_with_co2_nutrients_3.csv')
+    clustering_df = pd.read_csv('gs://foodprint-672/data/3D_recipe_clustering.csv')
+    recipes_df = pd.read_csv('gs://foodprint-672/data/dishes_with_co2_nutrients_3.csv')
 
     # average footprints
+    # random comment
     mean_co2_100gr_all = round((10 * np.mean(recipes_df['dish_footprint_per_100gr'])), 2)
 
     mask1 = recipes_df['dietary_info'].str.contains(r'vegetarian', na=True)
@@ -33,7 +34,7 @@ def app():
 
     # show co2 data of meats
     st.markdown('### The average carbon footprint per kilo of some common ingredients:')
-    co2_df = pd.read_csv('data/co2.csv')
+    co2_df = pd.read_csv('gs://foodprint-672/data/co2.csv')
 
     st.markdown('#### Meats')
     meats_lst = ['beef', 'pork', 'lamb', 'duck', 'chicken', 'salmon']
@@ -55,7 +56,7 @@ def app():
     st.table(meats_df)
 
     st.markdown('#### Non-meats')
-    nonmeats_df = pd.read_csv("data/nonmeats.csv")
+    nonmeats_df = pd.read_csv('gs://foodprint-672/data/nonmeats.csv')
     st.table(nonmeats_df)
 
     st.write('A carbon footprint is considered low if it is below 2 kg of CO2 output per 1 kg of food, moderate if it is between 2 and 3 kg of CO2 per kg, and high if it is greater than 3 kg of CO2 per kg.')
@@ -67,7 +68,12 @@ def app():
 
     direction = st.radio('Select a dish type:',
                         ('all', 'vegetarian', 'non-vegetarian'))
-    # add new column to df
+
+    # add co2 per kilo column
+    clustering_df['dish_footprint_per_kilo'] = clustering_df['dish_footprint_per_100gr'].apply(lambda x: x * 10)
+
+    clustering_df['co2_score_num'] = clustering_df['dish_footprint_per_kilo']
+
     # transform high scores
     mask = clustering_df['co2_score'].str.contains(r'high', na=True)
     clustering_df.loc[mask, 'co2_score_num'] = 3
@@ -107,9 +113,9 @@ def app():
     # replace plot code with this
     # change this variable based on if you want to show all recipes, just veg, or just non-veg
     #df = clustering_df
-    x, y, z = df['PCA1'], df['PCA2'], df['PCA3']
-    recipe = df['recipeName']
-    co2 = round((df['co2'] * 10), 4)
+    x, y, z = df['Dim1'], df['Dim2'], df['Dim3']
+    recipe = df['dish_name']
+    co2 = round((df['dish_footprint_per_kilo'] * 10), 4)
     fig = go.Figure(data=[go.Scatter3d(
         x=x,
         y=y,

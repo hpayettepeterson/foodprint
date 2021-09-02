@@ -12,11 +12,11 @@ import numpy as np
 
 def app():
     ############## LOADING SESSION #######################################
-    complete_df = pd.read_csv("data/dishes_with_co2_nutrients_3.csv")
+    complete_df = pd.read_csv("gs://foodprint-672/data/dishes_with_co2_nutrients_3.csv")
     #complete_df = complete_df.sort_values('dish_name')
-    cached_df = pickle.load(open("foodprint/cached_data/cached_im2recipe.pickle", "rb"))
-    clustering_df = pd.read_csv('data/3D_recipe_clustering.csv')
-    recipes_df = pd.read_csv('data/dishes_with_co2_nutrients_3.csv')
+    #cached_df = pickle.load(open("foodprint/cached_data/cached_im2recipe.pickle", "rb"))
+    clustering_df = pd.read_csv('gs://foodprint-672/data/3D_recipe_clustering.csv')
+    recipes_df = pd.read_csv('gs://foodprint-672/data/dishes_with_co2_nutrients_3.csv')
 
     ######################################################################
 
@@ -31,7 +31,7 @@ def app():
 
     ############starts the magic! ####################################################
     if st.button('Tell me about my dish!'):
-         ##### variables #############################
+        ##### variables #############################
         temp_df = complete_df.loc[complete_df['dish_name'].isin(dish_selection)]
         if len(temp_df) == 0:
             st.write('Please select a dish')
@@ -108,7 +108,7 @@ def app():
             #mask3 = recipes_df['id'].str.contains(f'{id}', na=True)
             #calories = recipes_df[mask3]['calories_per_100gr'].values[0] # NEED HELP TROUBLESHOOTING THIS LINE, how to get calorie info
             #st.markdown(f'This dish has about **{calories} calories** per 100 g serving.')
-                  # show link to recipe?
+            # show link to recipe?
 
             # get other nutritional info per 100gr for dish with particular ID
             # fat
@@ -204,7 +204,7 @@ def app():
 
                         ### Ingredients:''')
             for ingredient in temp_ingredients:
-                    st.markdown(f'- {ingredient}')
+                st.markdown(f'- {ingredient}')
             #if st.button('See all ingredients'): # get this working
             #     for ingredient in temp_ingredients:
             #         st.write(ingredient)
