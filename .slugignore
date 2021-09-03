@@ -18,5 +18,3 @@ credentials.json
 /notebooks
 Dockerfile
 app_orig.py
-setup.py
-setep.sh
