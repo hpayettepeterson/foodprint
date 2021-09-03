@@ -1,5 +1,4 @@
 # Heres a comment
-
 *.egg-info
 .coverage
 .ipynb_checkpoints
@@ -7,8 +6,6 @@
 raw_data/
 **/__pycache__/
 .env
-foodprint/data/
-foodprint/cached_data/
 raw_data
 *.csv
 *.ipynb
@@ -18,3 +15,8 @@ credentials.json
 /snapshots
 /foodprint
 /api
+/notebooks
+Dockerfile
+app_orig.py
+setup.py
+setep.sh

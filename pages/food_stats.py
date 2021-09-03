@@ -114,23 +114,24 @@ def app():
     #df = clustering_df
     x, y, z = df['Dim1'], df['Dim2'], df['Dim3']
     recipe = df['dish_name']
-    co2 = round((df['dish_footprint_per_kilo'] * 10), 4)
-    fig = go.Figure(data=[go.Scatter3d(
-        x=x,
-        y=y,
-        z=z,
-        mode='markers',
-        hovertext= recipe,
-        text=co2,
-        hovertemplate = '%{hovertext}<br>CO2/kg:%{text}',
-        marker=dict(
-            size=4,
-            color=df['co2_score_num'],                # set color to an array/list of desired values
-            colorscale='RdYlGn',   # choose a colorscale
-            opacity=0.8,
-            reversescale= True
-        )
-    )])
+    co2 = round((df['dish_footprint_per_kilo']), 4)
+    fig = go.Figure(data=[
+        go.Scatter3d(
+            x=x,
+            y=y,
+            z=z,
+            mode='markers',
+            hovertext=recipe,
+            text=co2,
+            hovertemplate='%{hovertext}<br>CO2/kg:%{text}',
+            marker=dict(
+                size=4,
+                color=
+                df['co2_score_num'],  # set color to an array/list of desired values
+                colorscale='RdYlGn',  # choose a colorscale
+                opacity=0.8,
+                reversescale=True))
+    ])
     # camera = dict(
     #     center=dict(x=a, y=b, z=c),
     #     eye=dict(x=0.0001, y=0.0001, z=0.0001)
@@ -138,6 +139,11 @@ def app():
     #fig.update_layout(scene_camera=camera, title="name")
     fig.update_layout(width=800, height=800, showlegend=False)
     st.plotly_chart(fig)
+
+
+
+
+
 
     st.write('--------------')
     st.markdown('## More facts about our data')
@@ -179,4 +185,4 @@ def app():
 
         st.markdown('''We collected carbon footprint data from [Reducing food’s environmental impacts through producers and consumers](https://science.sciencemag.org/content/360/6392/987) and [Healabel](https://healabel.com/carbon-footprint-of-foods). The CO2 emissions per ingredient are only estimates of average values and may not always be accurate.
                 We used food and recipe data from [pic2recipe](http://pic2recipe.csail.mit.edu/) and [Yummly](https://alioben.github.io/yummly/).
-                \nThis project was completed by Hannah Payette Peterson, Jean-Arnaud Ritouret, Martin Lechner, and Christopher Scott.''')
+                \nThis project was completed by Hannah Payette Peterson, Jean-Arnaud Ritouret, Martin Lechner, and Christopher Scott.\nYou can contact us at hpayettepeterson@gmail.com''')

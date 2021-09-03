@@ -160,24 +160,65 @@ def app():
                 st.table(df_show)
 
                 st.write('Here is a plot of the searched dish along with the four most similar dishes. The dishes are shown along three axes: CO2 output, calories per 100gr serving, and similarity (lower = more similar to input dish).')
-                fig_api = px.scatter_3d(api_input_df,
+
+                # fig_api = px.scatter(api_input_df,
+                #     title="",
+                #     x='percentage_of_similarity',
+                #     y='CO2 Output (kg per kg)',
+                #     'calories_per_100g'
+                #     z=,
+                #     labels={
+                #         "percentage_of_similarity": "Similarity",
+                #         "calories_per_100g": "Calories (per 100 g)",
+                #         "CO2 Output (kg per kg)": "CO2 Output (kg per kg)"
+                #     },
+                #     color_discrete_map={
+                #                 "low": "green",
+                #                 "moderate": "yellow",
+                #                 "high": "red"},
+                #     template="plotly",
+                #     hover_name='name',
+                #     hover_data=["CO2 Output (kg per kg)", "Carbon Footprint"],
+                #     color='CO2 Score')
+
+
+
+
+
+
+
+
+                fig_api = px.scatter(
+                    api_input_df,
                     title="",
-                    x='percentage_of_similarity',
-                    y='calories_per_100g',
-                    z='CO2 Output (kg per kg)',
+                    x="calories_per_100g",
+                    y='CO2 Output (kg per kg)',
                     labels={
-                        "percentage_of_similarity": "Similarity",
+                        # "percentage_of_similarity": "Similarity",
                         "calories_per_100g": "Calories (per 100 g)",
                         "CO2 Output (kg per kg)": "CO2 Output (kg per kg)"
                     },
                     color_discrete_map={
-                                "low": "green",
-                                "moderate": "yellow",
-                                "high": "red"},
+                        "low": "green",
+                        "moderate": "yellow",
+                        "high": "red"
+                    },
                     template="plotly",
                     hover_name='name',
                     hover_data=["CO2 Output (kg per kg)", "Carbon Footprint"],
-                    color='Carbon Footprint')
+                    color='Carbon Footprint',
+                    size="calories_per_100g")
+
+
+
+
+
+
+
+
+
+
+
                 fig_api.update(layout_coloraxis_showscale=False)
                 st.plotly_chart(fig_api)
                 #####  PLOT - Standart #############################
@@ -216,12 +257,23 @@ def app():
 
             st.write('')
 
+
+
+    # co2 output
+    # similarity
+
+    # colour = co2 score
+    # size = calories
+
+    
     st.write('--------')
     st.write(
         "\* Please note that the calculated carbon footprints are only estimates, to be used for educational purposes."
     )
     if st.button("Find out more"):
 
-        st.markdown('''We collected carbon footprint data from [Reducing food’s environmental impacts through producers and consumers](https://science.sciencemag.org/content/360/6392/987) and [Healabel](https://healabel.com/carbon-footprint-of-foods). The CO2 emissions per ingredient are only estimates of average values and may not always be accurate.
-                    We used food and recipe data from [pic2recipe](http://pic2recipe.csail.mit.edu/) and [Yummly](https://alioben.github.io/yummly/).
-                    \nThis project was completed by Hannah Payette Peterson, Jean-Arnaud Ritouret, Martin Lechner, and Christopher Scott.''')
+        st.markdown(
+            '''We collected carbon footprint data from [Reducing food’s environmental impacts through producers and consumers](https://science.sciencemag.org/content/360/6392/987) and [Healabel](https://healabel.com/carbon-footprint-of-foods). The CO2 emissions per ingredient are only estimates of average values and may not always be accurate.
+                We used food and recipe data from [pic2recipe](http://pic2recipe.csail.mit.edu/) and [Yummly](https://alioben.github.io/yummly/).
+                \nThis project was completed by Hannah Payette Peterson, Jean-Arnaud Ritouret, Martin Lechner, and Christopher Scott.\nYou can contact us at hpayettepeterson@gmail.com'''
+        )

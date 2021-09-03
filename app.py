@@ -46,7 +46,7 @@ from pages import dish_info, food_stats
 app = MultiPage()
 
 # Title of the main page
-st.title("foodprint.ai")
+st.title("foodprint ai")
 st.write('A project at Le Wagon Data Science Bootcamp')
 st.write('How can you make more informed choices about your food? foodprint.ai provides you with carbon footprint and nutritional information about your favorite dishes, and can help you find greener alternatives.')
 st.write('-----------------------------')
